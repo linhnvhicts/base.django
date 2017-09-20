@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'dal_select2',
     'backend.apps.BackendConfig',
     'api.apps.ApiConfig',
+    'flat_responsive',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
