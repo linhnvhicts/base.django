@@ -31,8 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'dal',
-    'dal_select2',
     'backend.apps.BackendConfig',
     'api.apps.ApiConfig',
     'flat_responsive',

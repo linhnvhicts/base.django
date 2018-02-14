@@ -9,7 +9,7 @@ LANGUAGE_CODE = 'en-us'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'base.django',
         'USER': 'root',
         'PASSWORD': '',

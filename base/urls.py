@@ -15,12 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from .look_up import *
 
 urlpatterns = [
     url(r'^api/', include('api.urls')),
     url(r'^admin/', admin.site.urls),
-
-    # autocomplete
-    url(r'^api/autocomplete/user/$', UserAutocomplete.as_view(), name='user-autocomplete',),
 ]
