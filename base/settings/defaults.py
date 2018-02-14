@@ -25,7 +25,7 @@ SECRET_KEY = '@=&8sbng*xn$9+i1)vr%h5u9b!hk)(c0bx4k2=ki#nzm7ak!&0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', ]
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,11 +124,25 @@ USE_L10N = True
 
 USE_TZ = True
 
+USE_THOUSAND_SEPARATOR=True
+
+THOUSAND_SEPARATOR=','
+
+DECIMAL_SEPARATOR='.'
+
+NUMBER_GROUPING=3
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
