@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+  redis:
+    image: redis:latest
+  web:
+    environment:
+      - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8080:8000"
+    depends_on:
+      - db
+      - redis
+  celery_worker:
+    environment:
+      - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: python3 -m celery -A base worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+  celery_beat:
+    environment:
+      - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: python3 -m celery -A base beat --pidfile= -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+
+volumes:
+  redisdata:

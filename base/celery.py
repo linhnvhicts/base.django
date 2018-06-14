@@ -19,8 +19,8 @@ app.autodiscover_tasks()
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls test('world') every 30 seconds
-    # sender.add_periodic_task(30.0, test.s('world'), expires=10)
-    # sender.add_periodic_task(60.0, test.s('Hello World'))
+    sender.add_periodic_task(60.0, test.s('world'), expires=3)
+    # sender.add_periodic_task(10.0, test.s('Hello World'))
 
 @app.task(bind=True)
 def debug_task(self):

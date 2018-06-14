@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
-CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = 'redis://redis:6379/1'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
