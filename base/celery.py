@@ -2,7 +2,10 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from celery.schedules import crontab
+import dotenv
+
 # set the default Django settings module for the 'celery' program.
+dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
 
 app = Celery('base')
@@ -19,7 +22,7 @@ app.autodiscover_tasks()
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls test('world') every 30 seconds
-    # sender.add_periodic_task(10.0, test.s('Test beat and Celery'))
+    # sender.add_periodic_task(1.0, test.s('Test beat and Celery'))
     # sender.add_periodic_task(10.0, test.s('Hello World'))
     print("setup_periodic_tasks")
 

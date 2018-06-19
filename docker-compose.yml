@@ -3,38 +3,51 @@ version: '3'
 services:
   db:
     image: postgres
+    volumes:
+      - ./persistent/db:/var/lib/postgresql/data
   redis:
     image: redis:latest
+    # volumes:
+    #   - ./persistent/redis-data:/data
   web:
-    environment:
-      - DJANGO_SETTINGS_MODULE=base.settings.dev
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - "8080:8000"
+      - "${WEB_HOST}:${WEB_HOST}"
     depends_on:
       - db
       - redis
+    command: python3 manage.py runserver 0.0.0.0:${WEB_HOST}
+    # command: ["./wait-for-it.sh", "db:5432", "--", "python3", "manage.py", "runserver", "0.0.0.0:8000"]
   celery_worker:
-    environment:
-      - DJANGO_SETTINGS_MODULE=base.settings.dev
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
     command: python3 -m celery -A base worker -l info
     volumes:
       - .:/code
     depends_on:
       - web
+  celery_flower:
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: python3 -m celery -A base flower -l info
+    volumes:
+      - .:/code
+    ports:
+      - "${FLOWER_PORT}:5555"
+    depends_on:
+      - web
   celery_beat:
-    environment:
-      - DJANGO_SETTINGS_MODULE=base.settings.dev
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
     command: python3 -m celery -A base beat --pidfile= -l info
     volumes:
       - .:/code
     depends_on:
       - web
-
-volumes:
-  redisdata:

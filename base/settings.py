@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@=&8sbng*xn$9+i1)vr%h5u9b!hk)(c0bx4k2=ki#nzm7ak!&0'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', ]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', '0.0.0.0' ]
 
 
 # Application definition
@@ -33,7 +33,6 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', ]
 INSTALLED_APPS = [
     'backend.apps.BackendConfig',
     'api.apps.ApiConfig',
-    'flat_responsive',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,7 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
-CELERY_BROKER_URL = 'redis://redis:6379/1'
+CELERY_BROKER_URL = 'redis://%s:6379/1' % (os.environ.get('REDIS_HOST'))
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -83,11 +82,11 @@ CELERY_BROKER_URL = 'redis://redis:6379/1'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'base.django',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': os.environ.get('DB_DBNAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -133,6 +132,13 @@ DECIMAL_SEPARATOR='.'
 NUMBER_GROUPING=3
 
 
+# https://devcenter.heroku.com/articles/django-assets
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
@@ -152,3 +158,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
+
+if os.environ.get('IS_HEROKU') == 'True':
+    import dj_database_url
+    db_from_env = dj_database_url.config()
+    DATABASES['default'].update(db_from_env)
