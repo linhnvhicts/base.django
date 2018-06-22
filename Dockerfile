@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:slim-jessie
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
 WORKDIR /code

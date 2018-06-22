@@ -2,9 +2,11 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    # image: postgres
+    build: ./db
     volumes:
       - ./persistent/db:/var/lib/postgresql/data
+      - ./persistent/db_bk:/var/lib/postgresql/data_bk
   redis:
     image: redis:latest
     # volumes:
