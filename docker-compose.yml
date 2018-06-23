@@ -5,8 +5,8 @@ services:
     # image: postgres
     build: ./db
     volumes:
-      - ./persistent/db:/var/lib/postgresql/data
-      - ./persistent/db_bk:/var/lib/postgresql/data_bk
+      - ./db/persistent/db:/var/lib/postgresql/data
+      - ./db/persistent/db_bk:/var/lib/postgresql/data_bk
   redis:
     image: redis:latest
     # volumes:
