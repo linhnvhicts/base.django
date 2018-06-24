@@ -17,7 +17,7 @@ heroku create
 
 heroku config:set DISABLE_COLLECTSTATIC=1
 
-heroku config:set DJANGO_SETTINGS_MODULE=base.settings.staging
+heroku config:set DJANGO_SETTINGS_MODULE=base.settings.heroku
 
 git push heroku master
 
