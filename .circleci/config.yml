@@ -13,20 +13,20 @@ jobs:
           POSTGRES_DB: circle_test
     steps:
       - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
-      - restore_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      - run:
-          command: |
-            cp .env.example .env
-            pip install -r requirements.txt
-      - save_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-          paths:
-            - ".venv"
-            - "/usr/local/bin"
-            - "/usr/local/lib/python3.6/site-packages"
+      # - run: sudo chown -R circleci:circleci /usr/local/bin
+      # - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      # - restore_cache:
+      #     key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      # - run:
+      #     command: |
+      #       cp .env.example .env
+      #       pip install -r requirements.txt
+      # - save_cache:
+      #     key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      #     paths:
+      #       - ".venv"
+      #       - "/usr/local/bin"
+      #       - "/usr/local/lib/python3.6/site-packages"
       - run:
           command: |
             python manage.py test
