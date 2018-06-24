@@ -17,10 +17,10 @@ jobs:
       # - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       # - restore_cache:
       #     key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      # - run:
-      #     command: |
-      #       cp .env.example .env
-      #       pip install -r requirements.txt
+      - run:
+          command: |
+            cp .env.example .env
+            pip install -r requirements.txt
       # - save_cache:
       #     key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       #     paths:
