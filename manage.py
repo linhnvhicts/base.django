@@ -8,7 +8,7 @@ import dotenv
 if __name__ == "__main__":
     dotenv.read_dotenv()
 
-    if sys.argv[1:2] != ['test']:
+    if sys.argv[1:2] == ['runserver']:
         while True:
             try:
                 connection = psycopg2.connect(
