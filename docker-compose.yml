@@ -12,8 +12,7 @@ services:
     # volumes:
     #   - ./persistent/redis-data:/data
   web:
-    environment:
-      - PIPENV_VENV_IN_PROJECT=true
+    # environment:
     #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
     volumes:
