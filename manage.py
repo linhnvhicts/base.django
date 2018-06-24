@@ -7,25 +7,25 @@ import dotenv
 
 if __name__ == "__main__":
     dotenv.read_dotenv()
-    time.sleep(5)
 
-    while True:
-        try:
-            connection = psycopg2.connect(
-                dbname=os.environ.get('DB_DBNAME'),
-                user=os.environ.get('DB_USER'),
-                password=os.environ.get('DB_PASSWORD'),
-                host=os.environ.get('DB_HOST'),
-                port=os.environ.get('DB_PORT')
-            )
+    if sys.argv[1:2] != ['test']:
+        while True:
+            try:
+                connection = psycopg2.connect(
+                    dbname=os.environ.get('DB_DBNAME'),
+                    user=os.environ.get('DB_USER'),
+                    password=os.environ.get('DB_PASSWORD'),
+                    host=os.environ.get('DB_HOST'),
+                    port=os.environ.get('DB_PORT')
+                )
 
-            if connection.closed == 0:
-                break
-            time.sleep(1)
-        except:
-            time.sleep(1)
-            print("DB is not yet ready. Retry")
-            pass
+                if connection.closed == 0:
+                    break
+                time.sleep(1)
+            except:
+                time.sleep(1)
+                print("DB is not yet ready. Retry")
+                pass
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "base.settings")
     try:
