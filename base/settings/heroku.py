@@ -1,5 +1,4 @@
-from .defaults import *
+from .circleci import *
 
-import dj_database_url
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
+# https://devcenter.heroku.com/articles/django-assets#whitenoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
