@@ -1,3 +1,4 @@
+import os
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
@@ -25,5 +26,9 @@ class AdminTestCase(TestCase):
     def test_login(self):
         c = Client()
         c.login(username='admin', password='123456')
-        print(c.get('/admin/').status_code)
         self.assertEqual(c.get('/admin/').status_code, 200)
+
+    def test_admin_header(self):
+        self.client.login(username='admin', password='123456')
+        res = self.client.get('/admin/')
+        self.assertContains(res, os.environ.get('ADMIN_SITE_HEADER') or 'Django administration', status_code=200)
