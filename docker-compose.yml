@@ -38,11 +38,11 @@ services:
     # environment:
     #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
-    command: python3 -m celery -A base flower -l info
+    command: python3 -m celery -A base flower --port=${FLOWER_PORT} -l info
     volumes:
       - .:/code
     ports:
-      - "${FLOWER_PORT}:5555"
+      - "${FLOWER_PORT}:${FLOWER_PORT}"
     depends_on:
       - web
   celery_beat:
