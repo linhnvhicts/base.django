@@ -26,3 +26,15 @@ heroku run python manage.py migrate
 heroku run python manage.py createsuperuser
 
 heroku open
+
+### Docker:
+
+#### Prerequisite
+Docker version 18.03.1-ce, build 9ee9f40
+docker-compose version 1.21.1, build 5a3f1a3
+
+#### Start dev
+cp .env.example .env
+docker-compose up
+docker-compose exec web python3 manage.py migrate
+docker-compose exec web python3 manage.py createsuperuser
