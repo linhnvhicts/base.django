@@ -1,24 +1,30 @@
-import os
 from django.test import TestCase
 from django.contrib.auth.models import User
-from django.test import Client
+from django.contrib.admin.sites import AdminSite
+from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import User
+from backend.admin import LogEntryAdmin
 
-class AdminTestCase(TestCase):
-    client = Client()
+from django.contrib.admin.options import (
+    ModelAdmin
+)
+
+# Create your tests here.
+class LogEntryModelAdminTest(TestCase):
+
     def setUp(self):
         user = User.objects.create(username="admin", email="admin@mpt.vn", is_staff=True, is_superuser=True)
-        user.set_password('123456')
-        user.save()
-
-    def test_login_fail(self):
-        self.client.login(username='admin', password='1234562')
-        self.assertEqual(self.client.get('/admin/').status_code, 302)
-
-    def test_login_success(self):
-        self.client.login(username='admin', password='123456')
-        self.assertEqual(self.client.get('/admin/').status_code, 200)
-
-    def test_admin_header(self):
-        self.client.login(username='admin', password='123456')
-        res = self.client.get('/admin/')
-        self.assertContains(res, os.environ.get('ADMIN_SITE_HEADER') or 'Django administration', status_code=200)
+        self.log_entry = LogEntry.objects.create(
+            user=user,
+            action_flag=2
+        )
+        self.site = AdminSite()
+        return None
+    
+    def test_modeladmin_str(self):
+        ma = LogEntryAdmin(LogEntry, self.log_entry)
+        self.assertEqual(str(ma), 'admin.LogEntryAdmin')
+    
+    def test_get_string(self):
+        ma = LogEntryAdmin(LogEntry, self.log_entry)
+        self.assertEqual(ma.get_string('Changed "admin" - Changed password.'), 'Changed "admin" - Changed password.')
