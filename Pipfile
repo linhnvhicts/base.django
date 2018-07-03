@@ -33,6 +33,7 @@ Pillow = "==5.0.0"
 [dev-packages]
 pylint = "*"
 coverage = "*"
+yapf = "*"
 
 [requires]
 python_version = "3.6"
