@@ -35,6 +35,9 @@ docker-compose version 1.21.1, build 5a3f1a3
 
 #### Start dev
 cp .env.example .env
+
 docker-compose up
+
 docker-compose exec web python3 manage.py migrate
+
 docker-compose exec web python3 manage.py createsuperuser
