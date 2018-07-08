@@ -7,6 +7,8 @@ services:
     volumes:
       - ./db/persistent/db:/var/lib/postgresql/data
       - ./db/persistent/db_bk:/var/lib/postgresql/data_bk
+    ports:
+      - "${DB_EXPOSE_PORT}:5432"
   redis:
     image: redis:latest
     # volumes:
