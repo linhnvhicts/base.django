@@ -2,10 +2,10 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from celery.schedules import crontab
-import dotenv
+from dotenv import load_dotenv
 
 # set the default Django settings module for the 'celery' program.
-dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
 
 app = Celery('base')

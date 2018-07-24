@@ -3,10 +3,11 @@ import os
 import sys
 import time
 import psycopg2
-import dotenv
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'), verbose=True)
 
 if __name__ == "__main__":
-    dotenv.read_dotenv()
 
     if sys.argv[1:2] == ['runserver']:
         while True:
