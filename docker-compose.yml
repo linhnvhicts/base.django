@@ -31,7 +31,7 @@ services:
     # environment:
     #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
-    command: python3 -m celery -A base worker -l info
+    command: bash -c "sleep 15 && python3 -m celery -A base worker -l info"
     volumes:
       - .:/code
     depends_on:
@@ -40,7 +40,7 @@ services:
     # environment:
     #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
-    command: python3 -m celery -A base flower --port=${FLOWER_PORT} -l info
+    command: bash -c "sleep 15 && python3 -m celery -A base flower --port=${FLOWER_PORT} -l info"
     volumes:
       - .:/code
     ports:
@@ -51,7 +51,7 @@ services:
     # environment:
     #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
-    command: python3 -m celery -A base beat --pidfile= -l info
+    command: bash -c "sleep 15 && python3 -m celery -A base beat --pidfile= -l info"
     volumes:
       - .:/code
     depends_on:
