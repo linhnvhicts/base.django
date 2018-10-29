@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  db:
+    # image: postgres
+    build: ./db
+    volumes:
+      - ./db/persistent/db:/var/lib/postgresql/data
+      - ./db/persistent/db_bk:/var/lib/postgresql/data_bk
+    ports:
+      - "${DB_EXPOSE_PORT}:5432"
+  redis:
+    image: redis:latest
+    # volumes:
+    #   - ./persistent/redis-data:/data
+  web:
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "${WEB_HOST}:${WEB_HOST}"
+    depends_on:
+      - db
+      - redis
+    # command: pipenv run python manage.py runserver 0.0.0.0:${WEB_HOST}
+    command: python3 manage.py runserver 0.0.0.0:${WEB_HOST}
+    # command: ["./wait-for-it.sh", "db:5432", "--", "python3", "manage.py", "runserver", "0.0.0.0:8000"]
+  celery_worker:
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: bash -c "sleep 15 && python3 -m celery -A base worker -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+  celery_flower:
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: bash -c "sleep 15 && python3 -m celery -A base flower --port=${FLOWER_PORT} -l info"
+    volumes:
+      - .:/code
+    ports:
+      - "${FLOWER_PORT}:${FLOWER_PORT}"
+    depends_on:
+      - web
+  celery_beat:
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
+    build: .
+    command: bash -c "sleep 15 && python3 -m celery -A base beat --pidfile= -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      - web

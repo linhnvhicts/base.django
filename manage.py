@@ -1,8 +1,33 @@
 #!/usr/bin/env python
 import os
 import sys
+import time
+import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'), verbose=True)
 
 if __name__ == "__main__":
+
+    if sys.argv[1:2] == ['runserver']:
+        while True:
+            try:
+                connection = psycopg2.connect(
+                    dbname=os.environ.get('DB_DBNAME'),
+                    user=os.environ.get('DB_USER'),
+                    password=os.environ.get('DB_PASSWORD'),
+                    host=os.environ.get('DB_HOST'),
+                    port=os.environ.get('DB_PORT')
+                )
+
+                if connection.closed == 0:
+                    break
+                time.sleep(1)
+            except:
+                time.sleep(1)
+                print("DB is not yet ready. Retry")
+                pass
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "base.settings")
     try:
         from django.core.management import execute_from_command_line

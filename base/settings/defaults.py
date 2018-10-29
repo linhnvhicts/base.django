@@ -13,19 +13,19 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@=&8sbng*xn$9+i1)vr%h5u9b!hk)(c0bx4k2=ki#nzm7ak!&0'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('ENVIRONMENT') == "development"
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', ]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', '0.0.0.0', 'testserver' ]
 
 
 # Application definition
@@ -33,17 +33,18 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', ]
 INSTALLED_APPS = [
     'backend.apps.BackendConfig',
     'api.apps.ApiConfig',
-    'flat_responsive',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,7 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
-CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = 'redis://%s:6379/1' % (os.environ.get('REDIS_HOST'))
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -83,11 +84,11 @@ CELERY_BROKER_URL = 'redis://localhost:6379/1'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'base.django',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': os.environ.get('DB_DBNAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -132,17 +133,16 @@ DECIMAL_SEPARATOR='.'
 
 NUMBER_GROUPING=3
 
+# https://devcenter.heroku.com/articles/django-assets
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# Location that collectstatic will store file
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
 ]
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -150,5 +150,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAdminUser'
     ],
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    # 'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+
+def show_toolbar(request):
+    return DEBUG
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
 }
