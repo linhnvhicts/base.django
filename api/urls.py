@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import include, path
 from .views import LogEntryViewSet, UserViewSet
 from rest_framework import routers
 
@@ -9,5 +9,5 @@ router.register(r'log-entry', LogEntryViewSet)
 router.register(r'user', UserViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    path('', include(router.urls)),
 ]
