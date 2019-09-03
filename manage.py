@@ -13,11 +13,11 @@ if __name__ == "__main__":
         while True:
             try:
                 connection = psycopg2.connect(
-                    dbname=os.environ.get('DB_DBNAME'),
-                    user=os.environ.get('DB_USER'),
-                    password=os.environ.get('DB_PASSWORD'),
-                    host=os.environ.get('DB_HOST'),
-                    port=os.environ.get('DB_PORT')
+                    dbname=os.environ.get('POSTGRES_DEFAULT_DB'),
+                    user=os.environ.get('POSTGRES_DEFAULT_USER'),
+                    password=os.environ.get('POSTGRES_DEFAULT_PASSWORD'),
+                    host=os.environ.get('POSTGRES_DEFAULT_HOST'),
+                    port=os.environ.get('POSTGRES_DEFAULT_PORT')
                 )
 
                 if connection.closed == 0:

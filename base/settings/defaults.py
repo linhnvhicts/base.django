@@ -76,7 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
-CELERY_BROKER_URL = 'redis://%s:6379/1' % (os.environ.get('REDIS_HOST'))
+CELERY_BROKER_URL = 'amqp://%s:%s@rabbit:5672' % (os.environ.get('RABBITMQ_DEFAULT_USER'), os.environ.get('RABBITMQ_DEFAULT_PASS'))
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -84,11 +84,11 @@ CELERY_BROKER_URL = 'redis://%s:6379/1' % (os.environ.get('REDIS_HOST'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_DBNAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'NAME': os.environ.get('POSTGRES_DEFAULT_DB'),
+        'USER': os.environ.get('POSTGRES_DEFAULT_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_DEFAULT_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_DEFAULT_HOST'),
+        'PORT': os.environ.get('POSTGRES_DEFAULT_PORT'),
     }
 }
 

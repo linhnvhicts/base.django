@@ -1,57 +1,67 @@
 version: '3'
 
 services:
-  db:
-    # image: postgres
-    build: ./db
-    volumes:
-      - ./db/persistent/db:/var/lib/postgresql/data
-      - ./db/persistent/db_bk:/var/lib/postgresql/data_bk
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     ports:
-      - "${DB_EXPOSE_PORT}:5432"
+      - "${RABBITMQ_EXPOSE_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_EXPOSE_PORT}:15672"
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_DEFAULT_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_DEFAULT_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DEFAULT_DB}
+      - POSTGRES_PORT=${POSTGRES_DEFAULT_PORT}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
   redis:
-    image: redis:latest
-    # volumes:
-    #   - ./persistent/redis-data:/data
+    image: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    volumes:
+      - ./data/redis-data:/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+       - ./data/pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT}:80"
+    logging:
+      driver: none
+    restart: unless-stopped
+  
+  flower:
+    image: mher/flower
+    command: ["flower", "--broker=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbit:5672", "--port=8888"]  
+    ports:  
+      - ${FLOWER_EXPOSE_PORT}:8888
+
   web:
-    # environment:
-    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
     build: .
     volumes:
       - .:/code
     ports:
       - "${WEB_HOST}:${WEB_HOST}"
     depends_on:
-      - db
+      - postgres
       - redis
-    # command: pipenv run python manage.py runserver 0.0.0.0:${WEB_HOST}
-    command: python3 manage.py runserver 0.0.0.0:${WEB_HOST}
-    # command: ["./wait-for-it.sh", "db:5432", "--", "python3", "manage.py", "runserver", "0.0.0.0:8000"]
-  celery_worker:
-    # environment:
-    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
+    command: python manage.py runserver 0.0.0.0:${WEB_HOST}
+  
+  worker:
     build: .
-    command: bash -c "sleep 15 && python3 -m celery -A base worker -l info"
-    volumes:
-      - .:/code
-    depends_on:
-      - web
-  celery_flower:
-    # environment:
-    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
-    build: .
-    command: bash -c "sleep 15 && python3 -m celery -A base flower --port=${FLOWER_PORT} -l info"
-    volumes:
-      - .:/code
-    ports:
-      - "${FLOWER_PORT}:${FLOWER_PORT}"
-    depends_on:
-      - web
-  celery_beat:
-    # environment:
-    #   - DJANGO_SETTINGS_MODULE=base.settings.dev
-    build: .
-    command: bash -c "sleep 15 && python3 -m celery -A base beat --pidfile= -l info"
+    command: watchmedo auto-restart --recursive -p '*.py' -- python -m celery -A base worker --beat -l info
     volumes:
       - .:/code
     depends_on:

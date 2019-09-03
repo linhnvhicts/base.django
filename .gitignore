@@ -90,3 +90,5 @@ ENV/
 .ropeproject
 nohup.out
 node_modules
+
+data
