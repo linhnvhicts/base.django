@@ -2,6 +2,7 @@ from rest_pandas import PandasView
 from rest_framework import serializers
 from rest_framework import serializers, viewsets
 from django.contrib import admin, auth
+from backend.models import User
 
 class LogEntrySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,9 +15,9 @@ class LogEntryViewSet(viewsets.ModelViewSet):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = auth.models.User
+        model = User
         exclude = ('password',)
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = auth.models.User.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer

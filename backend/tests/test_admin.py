@@ -1,8 +1,7 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
+from backend.models import User
 from django.contrib.admin.sites import AdminSite
 from django.contrib.admin.models import LogEntry
-from django.contrib.auth.models import User
 from backend.admin import LogEntryAdmin
 
 from django.contrib.admin.options import (

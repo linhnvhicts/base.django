@@ -51,7 +51,7 @@ services:
   web:
     build: .
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - "${WEB_HOST}:${WEB_HOST}"
     depends_on:
@@ -63,6 +63,6 @@ services:
     build: .
     command: watchmedo auto-restart --recursive -p '*.py' -- python -m celery -A base worker --beat -l info
     volumes:
-      - .:/code
+      - .:/app
     depends_on:
       - web
