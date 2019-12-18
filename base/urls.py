@@ -17,6 +17,7 @@ import os
 from django.urls import include, path
 from django.contrib import admin
 from django.conf import settings
+from graphene_django.views import GraphQLView
 import sys
 
 admin.site.site_header = os.environ.get('ADMIN_SITE_HEADER') or 'Django administration'
@@ -24,6 +25,7 @@ admin.site.site_header = os.environ.get('ADMIN_SITE_HEADER') or 'Django administ
 urlpatterns = [
     path('api', include('api.urls')),
     path('admin', admin.site.urls),
+    path('graphql', GraphQLView.as_view(graphiql=True)),
 ]
 
 if settings.DEBUG or 'test' in sys.argv:
