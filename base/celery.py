@@ -33,3 +33,4 @@ def debug_task(self):
 @app.task
 def test(str):
     print("Testing task: " + str)
+    return str

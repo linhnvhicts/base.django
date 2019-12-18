@@ -77,6 +77,7 @@ WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
 CELERY_BROKER_URL = 'amqp://%s:%s@rabbit:5672' % (os.environ.get('RABBITMQ_DEFAULT_USER'), os.environ.get('RABBITMQ_DEFAULT_PASS'))
+CELERY_RESULT_BACKEND = 'redis://redis'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
