@@ -1,0 +1,62 @@
+{% extends "admin/login_base.html" %}
+{% load i18n static jazzmin %}
+{% block form %}
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">{{ jazzmin_settings.welcome_sign }}</p>
+        <form action="{{ app_path }}" method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+
+            {% if form.username.errors %}
+            <div class="callout callout-danger">
+                <p>Username: {{ form.username.errors|join:', ' }}</p>
+            </div>
+            {% endif %}
+
+            {% if form.password.errors %}
+            <div class="callout callout-danger">
+                <p>Password: {{ form.password.errors|join:', ' }}</p>
+            </div>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+            <div class="callout callout-danger">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% endif %}
+            <div class="input-group mb-3">
+                <input type="text" name="username" class="form-control" placeholder="{% trans 'username' %}" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" name="password" class="form-control" placeholder="{% trans 'password' %}"
+                    required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-block">{% trans "Log in" %}</button>
+                </div>
+            </div>
+            <br>
+            <div class="password-reset-link">
+                <a
+                    href="{% url 'backend.admin_send_reset_password_email' %}">{% trans 'Forgotten your password?' %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
