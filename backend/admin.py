@@ -1,6 +1,10 @@
 from django.contrib import admin
+from backend.models import User
 
 # Register your models here.
+
+admin.site.register(User)
+
 class LogEntryAdmin(admin.ModelAdmin):
     list_display = ('id', 'get_string', 'action_time', 'object_id')
     actions = None
