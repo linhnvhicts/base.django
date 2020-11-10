@@ -1,6 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
+
+
 class LogEntryAdmin(admin.ModelAdmin):
     list_display = ('id', 'get_string', 'action_time', 'object_id')
     actions = None
@@ -10,11 +12,12 @@ class LogEntryAdmin(admin.ModelAdmin):
 
     search_fields = ['=user__username', ]
     fieldsets = [
-        (None, {'fields':()}), 
-        ]
+        (None, {'fields': ()}),
+    ]
 
     def __init__(self, *args, **kwargs):
         super(LogEntryAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = None
+
 
 admin.site.register(admin.models.LogEntry, LogEntryAdmin)

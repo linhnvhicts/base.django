@@ -81,8 +81,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
-CELERY_BROKER_URL = 'amqp://%s:%s@rabbit:5672' % (os.environ.get('RABBITMQ_DEFAULT_USER'), os.environ.get('RABBITMQ_DEFAULT_PASS'))
-CELERY_RESULT_BACKEND = 'redis://redis'
+CELERY_BROKER_URL = 'amqp://%s:%s@%s:%s' % (os.environ.get('RABBITMQ_DEFAULT_USER'), os.environ.get('RABBITMQ_DEFAULT_PASS'), os.environ.get('RABBITMQ_HOST'), os.environ.get('RABBITMQ_EXPOSE_PORT'))
+CELERY_RESULT_BACKEND = 'redis://localhost:%s' % os.environ.get('REDIS_EXPOSE_PORT')
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -90,11 +90,11 @@ CELERY_RESULT_BACKEND = 'redis://redis'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DEFAULT_DB'),
-        'USER': os.environ.get('POSTGRES_DEFAULT_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_DEFAULT_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_DEFAULT_HOST'),
-        'PORT': os.environ.get('POSTGRES_DEFAULT_PORT'),
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_EXPOSE_PORT'),
     }
 }
 

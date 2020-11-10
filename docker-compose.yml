@@ -2,7 +2,6 @@ version: '3'
 
 services:
   rabbit:
-    hostname: rabbit
     image: rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
@@ -10,24 +9,38 @@ services:
     ports:
       - "${RABBITMQ_EXPOSE_PORT}:5672"
       - "${RABBITMQ_MANAGEMENT_EXPOSE_PORT}:15672"
-
+    logging:
+      driver: 'none'
   postgres:
-    image: postgres
+    image: postgres:13
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_DEFAULT_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_DEFAULT_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DEFAULT_DB}
-      - POSTGRES_PORT=${POSTGRES_DEFAULT_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_EXPOSE_PORT}:5432"
 
   redis:
-    image: redis
+    image: redis:6
     command: ["redis-server", "--appendonly", "yes"]
     hostname: redis
     volumes:
       - ./data/redis-data:/data
+    ports:  
+      - ${REDIS_EXPOSE_PORT}:6379
+    logging:
+      driver: 'none'
+  
+  flower:
+    image: mher/flower
+    command: ["flower", "--broker=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbit:5672", "--port=8888"]  
+    ports:  
+      - ${FLOWER_EXPOSE_PORT}:8888
+    logging:
+      driver: 'none'
 
   pgadmin:
     image: dpage/pgadmin4
@@ -41,28 +54,23 @@ services:
     logging:
       driver: none
     restart: unless-stopped
-  
-  flower:
-    image: mher/flower
-    command: ["flower", "--broker=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbit:5672", "--port=8888"]  
-    ports:  
-      - ${FLOWER_EXPOSE_PORT}:8888
 
-  web:
-    build: .
-    volumes:
-      - .:/app
-    ports:
-      - "${WEB_HOST}:${WEB_HOST}"
-    depends_on:
-      - postgres
-      - redis
-    command: python manage.py runserver 0.0.0.0:${WEB_HOST}
+
+  # web:
+  #   build: .
+  #   volumes:
+  #     - .:/app
+  #   ports:
+  #     - "${WEB_HOST}:${WEB_HOST}"
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   command: python manage.py runserver 0.0.0.0:${WEB_HOST}
   
-  worker:
-    build: .
-    command: watchmedo auto-restart --recursive -p '*.py' -- python -m celery -A base worker --beat -l info
-    volumes:
-      - .:/app
-    depends_on:
-      - web
+  # worker:
+  #   build: .
+  #   command: watchmedo auto-restart --recursive -p '*.py' -- python -m celery -A base worker --beat -l info
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - web
