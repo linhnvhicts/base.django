@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -25,7 +27,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('ENVIRONMENT') == "development"
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', '0.0.0.0', 'testserver' ]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 '.herokuapp.com', '0.0.0.0', 'testserver']
 
 
 # Application definition
@@ -45,7 +48,7 @@ INSTALLED_APPS = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'base.schema.schema' # Where your Graphene schema lives
+    'SCHEMA': 'base.schema.schema'  # Where your Graphene schema lives
 }
 
 MIDDLEWARE = [
@@ -65,7 +68,7 @@ ROOT_URLCONF = 'base.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['%s/templates' % BASE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,8 +84,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'base.wsgi.application'
 
 # Celery
-CELERY_BROKER_URL = 'amqp://%s:%s@%s:%s' % (os.environ.get('RABBITMQ_DEFAULT_USER'), os.environ.get('RABBITMQ_DEFAULT_PASS'), os.environ.get('RABBITMQ_HOST'), os.environ.get('RABBITMQ_EXPOSE_PORT'))
-CELERY_RESULT_BACKEND = 'redis://localhost:%s' % os.environ.get('REDIS_EXPOSE_PORT')
+CELERY_BROKER_URL = 'amqp://%s:%s@%s:%s' % (os.environ.get('RABBITMQ_DEFAULT_USER'), os.environ.get(
+    'RABBITMQ_DEFAULT_PASS'), os.environ.get('RABBITMQ_HOST'), os.environ.get('RABBITMQ_EXPOSE_PORT'))
+CELERY_RESULT_BACKEND = 'redis://localhost:%s' % os.environ.get(
+    'REDIS_EXPOSE_PORT')
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -131,13 +136,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-USE_THOUSAND_SEPARATOR=True
+USE_THOUSAND_SEPARATOR = True
 
-THOUSAND_SEPARATOR=','
+THOUSAND_SEPARATOR = ','
 
-DECIMAL_SEPARATOR='.'
+DECIMAL_SEPARATOR = '.'
 
-NUMBER_GROUPING=3
+NUMBER_GROUPING = 3
 
 # https://devcenter.heroku.com/articles/django-assets
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -159,11 +164,13 @@ REST_FRAMEWORK = {
     # 'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
+
 def show_toolbar(request):
     return DEBUG
 
+
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
 }
 
 AUTH_USER_MODEL = 'backend.User'

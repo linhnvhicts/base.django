@@ -18,6 +18,8 @@ from django.urls import include, path
 from django.contrib import admin
 from django.conf import settings
 from graphene_django.views import GraphQLView
+from django.views.generic import TemplateView
+from rest_framework.schemas import get_schema_view
 import sys
 
 admin.site.site_header = os.environ.get(
@@ -27,6 +29,15 @@ urlpatterns = [
     path('api', include('api.urls')),
     path('admin', admin.site.urls),
     path('graphql', GraphQLView.as_view(graphiql=True)),
+    path('swagger-ui/', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='swagger-ui'),
+    path('openapi/', get_schema_view(
+        title="Your Project",
+        description="API for all things …",
+        version="1.0.0"
+    ), name='openapi-schema'),
 ]
 
 if settings.DEBUG or 'test' in sys.argv:
