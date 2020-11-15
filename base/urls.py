@@ -39,9 +39,3 @@ urlpatterns = [
         version="1.0.0"
     ), name='openapi-schema'),
 ]
-
-if settings.DEBUG or 'test' in sys.argv:
-    import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns

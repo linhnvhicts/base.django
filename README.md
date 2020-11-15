@@ -44,18 +44,14 @@ docker-compose up -d
 celery -A base worker --beat -l info
 ```
 
-### Test
+## Test
 ```
 ./manage.py test
 ```
 
-## heroku deploy 
+### coverage
+
 ```
-heroku create
-heroku config:set DISABLE_COLLECTSTATIC=1
-heroku config:set DJANGO_SETTINGS_MODULE=base.settings.heroku
-git push heroku master
-heroku run python manage.py migrate
-heroku run python manage.py createsuperuser
-heroku open
+coverage run --omit '.venv/*' --source='.' manage.py test api
+coverage html
 ```
