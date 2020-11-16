@@ -22,6 +22,12 @@ Activate `poetry` env first
 poetry shell
 ```
 
+When install new package, need to export `requirements.txt` for circleci to run
+
+```
+poetry export --dev -f requirements.txt --output requirements.txt
+```
+
 ### Production:
 export DJANGO_SETTINGS_MODULE=base.settings.production
 
