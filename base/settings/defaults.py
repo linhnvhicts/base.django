@@ -168,3 +168,6 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 AUTH_USER_MODEL = 'backend.User'
+
+#changed in django 3.0 to DENY (affect add modal on admin) https://docs.djangoproject.com/en/3.1/ref/clickjacking/#setting-x-frame-options-for-all-responses
+X_FRAME_OPTIONS = 'SAMEORIGIN'
