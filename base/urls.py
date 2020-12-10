@@ -19,23 +19,43 @@ from django.contrib import admin
 from django.conf import settings
 from graphene_django.views import GraphQLView
 from django.views.generic import TemplateView
-from rest_framework.schemas import get_schema_view
 import sys
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 admin.site.site_header = os.environ.get(
     'ADMIN_SITE_HEADER') or 'Django administration'
 
 urlpatterns = [
-    path('api', include('api.urls')),
-    path('admin', admin.site.urls),
+    path('api/', include('api.urls')),
+    path('admin/', admin.site.urls),
     path('graphql', GraphQLView.as_view(graphiql=True)),
-    path('swagger-ui/', TemplateView.as_view(
-        template_name='swagger-ui.html',
-        extra_context={'schema_url': 'openapi-schema'}
-    ), name='swagger-ui'),
-    path('openapi/', get_schema_view(
-        title="Your Project",
-        description="API for all things …",
-        version="1.0.0"
-    ), name='openapi-schema'),
+]
+
+
+# Schemas
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Snippets API",
+        default_version='v1',
+        description="Test description",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+
+urlpatterns = urlpatterns + [
+    path('schema/swagger.json',
+         schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('schema/swagger.yaml',
+         schema_view.without_ui(cache_timeout=0), name='schema-yaml'),
+    path('schema/swagger/', schema_view.with_ui('swagger',
+                                                cache_timeout=0), name='schema-swagger-ui'),
+    path('schema/redoc/', schema_view.with_ui('redoc',
+                                              cache_timeout=0), name='schema-redoc'),
 ]
