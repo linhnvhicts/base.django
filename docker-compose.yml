@@ -44,7 +44,7 @@ services:
   
   flower:
     image: mher/flower
-    command: ["flower", "--broker=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbit:5672", "--port=8888"]  
+    command: ["celery", "flower", "--broker=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbit:5672", "--port=8888"]  
     ports:  
       - ${FLOWER_EXPOSE_PORT}:8888
 
