@@ -1,5 +1,6 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.firefox.options import Options
 from backend.models import User
 
 
@@ -13,7 +14,9 @@ class MySeleniumTests(StaticLiveServerTestCase):
         user.save()
 
         super().setUpClass()
-        cls.selenium = WebDriver()
+        options = Options()
+        options.headless = True
+        cls.selenium = WebDriver(options=options)
         cls.selenium.implicitly_wait(10)
 
     @classmethod
