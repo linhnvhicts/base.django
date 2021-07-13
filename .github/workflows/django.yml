@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    
+
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -32,6 +32,7 @@ jobs:
       run: docker-compose -f "docker-compose.yml" up -d --build
     - name: Run Tests
       run: |
+        sleep 20
         coverage run manage.py test -v 2 && coverage report
         flake8
     - name: Stop containers
