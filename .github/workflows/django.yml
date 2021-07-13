@@ -42,8 +42,8 @@ jobs:
       
     - name: Run Tests
       run: |
+        sleep 120
         coverage run manage.py test -v 2 && coverage report
-      if: ${{ success() }}
     - name: Stop containers
       if: always()
       run: docker-compose -f "docker-compose.yml" down
