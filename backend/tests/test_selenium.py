@@ -13,7 +13,10 @@ class MySeleniumTests(StaticLiveServerTestCase):
         user.save()
 
         super().setUpClass()
-        cls.selenium = WebDriver()
+        try:
+            cls.selenium = WebDriver()
+        except Exception as e:
+            print(e)
         cls.selenium.implicitly_wait(10)
 
     @classmethod
