@@ -39,9 +39,11 @@ jobs:
         sudo mv geckodriver /usr/local/bin/
     - name: Start containers
       run: docker-compose -f "docker-compose.yml" up -d --build
+      
     - name: Run Tests
       run: |
         coverage run manage.py test -v 2 && coverage report
+      if: ${{ success() }}
     - name: Stop containers
       if: always()
       run: docker-compose -f "docker-compose.yml" down
