@@ -1,4 +1,3 @@
-import os
 from django.test import TestCase, Client
 from backend.models import User
 

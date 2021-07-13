@@ -1,5 +1,5 @@
 from django.test import TestCase
-from backend.models import User, Article
+from backend.models import User
 from django.test import Client
 from django.contrib.auth.hashers import make_password
 

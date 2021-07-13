@@ -13,7 +13,7 @@ class GrapheneTest(GraphQLTestCase):
     GRAPHQL_URL = "/graphql"
 
     def setUp(self):
-        user = User.objects.create(
+        User.objects.create(
             username="admin", email="admin@icts.vn", is_staff=True, is_superuser=True)
         return None
 
