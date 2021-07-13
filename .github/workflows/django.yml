@@ -3,22 +3,23 @@ name: Django CI
 on:
   push:
     branches: 
+    - master
     - origin/linh-dev
   pull_request:
     branches: 
     - master
+    - origin/linh-dev
+
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.8]
+        python-version: 3.8
 
     steps:
-    - name: add permission to delete
-      run: sudo chown -R $USER:$USER /home/linhnvhicts/actions-runner/_work/base.django
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -30,12 +31,11 @@ jobs:
         pip install -r requirements.txt
         cp .env.example .env
     - name: Start containers
-      run: sudo docker-compose -f "docker-compose.yml" up -d --build
-      
+      run: docker-compose -f "docker-compose.yml" up -d --build
     - name: Run Tests
       run: |
-        sleep 20
         coverage run manage.py test -v 2 && coverage report
+        flake8
     - name: Stop containers
       if: always()
-      run: sudo docker-compose -f "docker-compose.yml" down
+      run: docker-compose -f "docker-compose.yml" down
