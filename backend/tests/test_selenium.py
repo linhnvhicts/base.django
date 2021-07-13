@@ -13,7 +13,10 @@ class MySeleniumTests(StaticLiveServerTestCase):
         user.save()
 
         super().setUpClass()
-        WebDriver().implicitly_wait(10)
+        try:
+            WebDriver().implicitly_wait(10)
+        except Exception as e:
+            print(e)
 
     @classmethod
     def tearDownClass(cls):
