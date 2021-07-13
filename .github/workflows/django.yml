@@ -28,7 +28,7 @@ jobs:
         pip install -r requirements.txt
         cp .env.example .env
     - name: Start containers
-      run: sudo docker-compose -f "docker-compose.yml" up -d --build
+      run: docker-compose -f "docker-compose.yml" up -d --build
       
     - name: Run Tests
       run: |
@@ -36,4 +36,4 @@ jobs:
         coverage run manage.py test -v 2 && coverage report
     - name: Stop containers
       if: always()
-      run: sudo docker-compose -f "docker-compose.yml" down
+      run: docker-compose -f "docker-compose.yml" down
