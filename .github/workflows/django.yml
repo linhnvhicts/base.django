@@ -42,7 +42,7 @@ jobs:
       
     - name: Run Tests
       run: |
-        sleep 120
+        sleep 60
         coverage run manage.py test -v 2 && coverage report
     - name: Stop containers
       if: always()
