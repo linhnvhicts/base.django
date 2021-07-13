@@ -13,21 +13,17 @@ class MySeleniumTests(StaticLiveServerTestCase):
         user.save()
 
         super().setUpClass()
-        try:
-            cls.selenium = WebDriver()
-        except Exception as e:
-            print(e)
-        cls.selenium.implicitly_wait(10)
+        WebDriver().implicitly_wait(10)
 
     @classmethod
     def tearDownClass(cls):
-        cls.selenium.quit()
+        WebDriver().quit()
         super().tearDownClass()
 
     def test_login(self):
-        self.selenium.get('%s%s' % (self.live_server_url, '/admin/'))
-        username_input = self.selenium.find_element_by_name("username")
+        WebDriver().get('%s%s' % (self.live_server_url, '/admin/'))
+        username_input = WebDriver().find_element_by_name("username")
         username_input.send_keys('admin')
-        password_input = self.selenium.find_element_by_name("password")
+        password_input = WebDriver().find_element_by_name("password")
         password_input.send_keys('123456')
-        self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
+        WebDriver().find_element_by_xpath('//input[@value="Log in"]').click()
