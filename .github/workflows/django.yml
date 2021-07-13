@@ -27,6 +27,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         cp .env.example .env
+    - name: Install Geckodriver
+      run: |
+        sudo apt-get install firefox
+        wget https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz
+        tar -xvzf geckodriver*
+        chmod +x geckodriver
+        sudo mv geckodriver /usr/local/bin/
     - name: Start containers
       run: sudo docker-compose -f "docker-compose.yml" up -d --build
       
