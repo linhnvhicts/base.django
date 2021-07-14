@@ -1,41 +1,48 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
     branches: 
-    - master
     - origin/linh-dev
   pull_request:
     branches: 
     - master
-    - origin/linh-dev
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: 3.8
-
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.8'
+
+    - name: Cache Dependencies
+      uses: actions/cache@v2
+      id: cache
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-pip-${{ hashFiles('requirements.txt') }}
+
     - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
+        echo "Installing dependencies and caching them."
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        cp .env.example .env
+        
     - name: Start containers
-      run: docker-compose -f "docker-compose.yml" up -d --build
+      run: |
+        pip cache dir
+        cp .env.example .env
+        docker-compose -f "docker-compose.yml" up -d --build
+
     - name: Run Tests
       run: |
+        sleep 10
         coverage run manage.py test -v 2 && coverage report
         flake8
+
     - name: Stop containers
       if: always()
       run: docker-compose -f "docker-compose.yml" down

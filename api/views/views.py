@@ -1,7 +1,5 @@
-from rest_pandas import PandasView
-from rest_framework import serializers
 from rest_framework import serializers, viewsets
-from django.contrib import admin, auth
+from django.contrib import admin
 from backend.models import User
 
 
