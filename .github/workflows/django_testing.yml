@@ -9,10 +9,8 @@ on:
     - master
 
 jobs:
-  build:
-
+  setup:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -20,6 +18,10 @@ jobs:
       with:
         python-version: '3.8'
 
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
     - name: Cache Dependencies
       uses: actions/cache@v2
       id: cache
@@ -38,9 +40,12 @@ jobs:
         pip cache dir
         cp .env.example .env
         docker-compose -f "docker-compose.yml" up -d --build
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     - name: Run Tests
       run: |
-        sleep 10
         coverage run manage.py test -v 2 && coverage report
         flake8
     - name: Stop containers
