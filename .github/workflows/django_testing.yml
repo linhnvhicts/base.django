@@ -25,19 +25,18 @@ jobs:
       id: cache
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-          ${{ runner.os }}-
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         echo "Installing dependencies and caching them."
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip cache dir
     - name: Start containers
       run: |
+        pip cache dir
         cp .env.example .env
         docker-compose -f "docker-compose.yml" up -d --build
     - name: Run Tests
