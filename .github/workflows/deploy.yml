@@ -9,6 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: test
+        run: echo {{ secrets.SSH_PRIVATE_KEY }}
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         with:
