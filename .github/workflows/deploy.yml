@@ -19,6 +19,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            eval "$(ssh-agent -s)"
             ssh-add -l
             cd base.django/
             git pull
