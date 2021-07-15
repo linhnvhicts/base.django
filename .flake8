@@ -2,3 +2,4 @@
 exclude = .git,*migrations*, manage.py, *__init__.py
 max-line-length = 119
 ignore = F405, F403
+max-complexity=10

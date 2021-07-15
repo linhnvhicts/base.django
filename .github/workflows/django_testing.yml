@@ -41,7 +41,7 @@ jobs:
       run: |
         sleep 10
         coverage run manage.py test -v 2 && coverage report && coverage html
-        flake8 --max-complexity 15 --output-file=flake8_style_results.txt
+        flake8 --output-file=flake8_style_results.txt
 
     - name: Stop containers
       if: always()
