@@ -6,22 +6,50 @@ on:
     - master
 
 jobs:
-  deploy:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: test
-        run: echo {{ secrets.SSH_PRIVATE_KEY }}
-      - name: Setup SSH Keys and known_hosts
-        env:
-            SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-            mkdir -p ~/.ssh
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
-            ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-            ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Cache Dependencies
+      uses: actions/cache@v2
+      id: cache
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-pip-${{ hashFiles('requirements.txt') }}
+
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        echo "Installing dependencies and caching them."
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Start containers
+      run: |
+        pip cache dir
+        cp .env.example .env
+        docker-compose -f "docker-compose.yml" up -d --build
+
+    - name: Run Tests
+      run: |
+        sleep 10
+        coverage run manage.py test -v 2 && coverage report
+        flake8
+
+    - name: Stop containers
+      if: always()
+      run: docker-compose -f "docker-compose.yml" down
+
+  deploy-to-server:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
       - name: executing remote ssh commands using ssh key
-        env:
-            SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
