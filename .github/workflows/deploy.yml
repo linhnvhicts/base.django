@@ -8,8 +8,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment:
-      name: Dev
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -40,13 +38,23 @@ jobs:
     - name: Run Tests
       run: |
         sleep 10
-        coverage run manage.py test -v 2 && coverage report
-        flake8
+        coverage run manage.py test -v 2 && coverage report && coverage html
+        flake8 --max-complexity 15 --output-file=flake8_style_results.txt
 
     - name: Stop containers
       if: always()
       run: docker-compose -f "docker-compose.yml" down
-
+    
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        path: |
+          htmlcov
+          flake8_style_results.txt
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
+      
   deploy-to-server:
     needs: build-and-test
     runs-on: ubuntu-latest
