@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment:
+      name: Dev
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
