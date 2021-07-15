@@ -46,6 +46,7 @@ jobs:
       run: docker-compose -f "docker-compose.yml" down
 
   deploy-to-server:
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: executing remote ssh commands using ssh key
