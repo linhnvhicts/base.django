@@ -19,5 +19,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            ssh-add -l
             cd base.django/
             git pull
