@@ -11,7 +11,17 @@ jobs:
     steps:
       - name: test
         run: echo {{ secrets.SSH_PRIVATE_KEY }}
+      - name: Setup SSH Keys and known_hosts
+        env:
+            SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+            ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
       - name: executing remote ssh commands using ssh key
+        env:
+            SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -19,8 +29,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            eval "$(ssh-agent -s)"
-            ssh-add ~/.ssh/id_ed25519
             ssh-add -l
             cd base.django/
             git pull
