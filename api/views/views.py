@@ -6,7 +6,8 @@ from backend.models import User
 class LogEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = admin.models.LogEntry
-        fields = ('__all__')
+        fields = (
+            '__all__')
 
 
 class LogEntryViewSet(viewsets.ModelViewSet):
@@ -17,9 +18,11 @@ class LogEntryViewSet(viewsets.ModelViewSet):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ('password',)
+        exclude = (
+            'password',)
 
 
+# abc
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
